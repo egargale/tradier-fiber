@@ -1,0 +1,65 @@
+version: "3.9"
+services:
+  pg_helpers:
+    build: 
+      context: .
+      dockerfile: ./build/pg_helpers/Dockerfile
+    tty: true
+    # command:  ["sleep", "infinity"]
+    environment:
+      DATABASE_HOST: postgres
+    # docker-compose run --rm pg_helpers migrate -path ./migrations/ -database postgres://root:secret@postgres:5432/tradier?sslmode=disable up
+    depends_on:
+      - postgres
+  backend:
+    build: 
+      context: .
+      dockerfile: ./build/backend/Dockerfile
+    ports:
+      - "3300:3300"
+    command: backend -env /api/env.example
+    environment:
+      DATABASE_HOST: postgres
+      # RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+    # docker-compose run rest-server migrate -path /api/migrations/ -database postgres://user:password@postgres:5432/dbname?sslmode=disable up
+    depends_on:
+      - postgres
+      - redis
+      # - memcached
+      # - zookeeper
+      # - kafka
+      # - rabbitmq
+  redis:
+    image: bitnami/redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=tradier
+    ports:
+      - "5432:5432"
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    ports:
+      - "5050:80"
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - DB_SOURCE=postgresql://root:secret@postgres:5432/tradier?sslmode=disable
+  #   depends_on:
+  #     - postgres
+  #   entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+  #   command: [ "/app/main" ]

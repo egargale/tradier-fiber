@@ -1,0 +1,46 @@
+//// -- LEVEL 1
+//// -- Tables and References
+
+// Creating tables
+Table users as U {
+  user_id serial [pk, increment] 
+  tradier_id varchar [not null]
+  name varchar [not null]
+}
+
+Table profiles as PR {
+  profile_id int [pk, increment] // auto-increment
+  user_id int [ref: > U.user_id]
+  balances_id int  //[ref: - B.balances_id]
+  account_number varchar [not null]
+  classification varchar [not null]
+  date_created timestamptz [not null]
+  day_trader boolean [not null]
+  option_level int [not null]
+  status varchar [not null]
+  type Account_Type [not null]
+  last_update_date timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table positions as PS {
+  position_id serial [pk, increment]
+  profile_id int [ref: > PR.profile_id]
+  cost_basis int
+  date_acquired timestamptz
+  quantity int
+  symbol varchar
+  strategy_id bigint [ref: > S.strategy_id]
+}
+
+Table strategies as S {
+  strategy_id bigserial [pk, increment]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+// Enum for 'profile' table below
+Enum account_type {
+   cash
+   margin
+   pdt 
+}
