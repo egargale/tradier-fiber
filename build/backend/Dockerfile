@@ -38,6 +38,6 @@ COPY --from=builder /go/bin/migrate ./bin/migrate
 COPY --from=builder /build/env.example .
 COPY --from=builder /build/db/ .
 
-EXPOSE 9234
+EXPOSE 3300
 
 CMD ["backend", "-env", "/api/env.example"]
