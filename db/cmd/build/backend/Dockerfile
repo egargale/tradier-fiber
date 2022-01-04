@@ -12,11 +12,8 @@ COPY . .
 
 RUN go mod download
 
-# RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl \
-#     github.com/egargale/tradier-fiber/cmd/backend
-
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl \
-        /backend
+    github.com/egargale/tradier-fiber/cmd/backend
 
 RUN CGO_ENABLED=0 GOOS=linux go install -a -installsuffix cgo -ldflags "-s -w" -tags 'postgres' \
     github.com/golang-migrate/migrate/v4/cmd/migrate@v4.14.1
