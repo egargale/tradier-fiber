@@ -1,0 +1,15 @@
+FROM golang:1.17
+
+WORKDIR /d/go/src/tradier-fiber/tradier-fiber/
+COPY . .
+RUN go mod download
+
+# RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -ldflags "-extldflags -static" -tags musl -o backend \
+#     github.com/egargale/tradier-fiber/cmd/backend
+
+# RUN go get -d -v ./...
+RUN go build -v ./cmd/backend
+
+EXPOSE 3300
+
+CMD ["./backend"]

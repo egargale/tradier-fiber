@@ -14,10 +14,10 @@ services:
   backend:
     build: 
       context: .
-      dockerfile: ./build/backend/Dockerfile
+      dockerfile: ./build/backend/Dockerfile_alt
     ports:
       - "3300:3300"
-    command: backend -env /api/env.example
+    command: ./backend -env /api/env.example
     environment:
       DATABASE_HOST: postgres
       # RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
