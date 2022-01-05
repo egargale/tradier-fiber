@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	
-	"tradier-fiber/internals"
-	"tradier-fiber/internals/postgresql/db"
+	//"github.com/egargale/tradier-fiber/internals"
+	"github.com/egargale/tradier-fiber/internals/postgresql/db"
 )
 
 

@@ -1,16 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	"strconv"
-	"fmt"
+
+	// "fmt"
 	"log"
-	"tradier-fiber/internals/rest"
-	"tradier-fiber/internals/util"
+
+	db "github.com/egargale/tradier-fiber/internals/postgresql"
+	"github.com/egargale/tradier-fiber/internals/util"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
 )
-var Config util.Config
+
+var MyConfig util.Config
 
 type Todo struct {
 	Id        int    `json:"id"`
@@ -24,16 +28,36 @@ var todos = []*Todo{
 }
 
 func main() {
-	
+
 	// Parsing Config with Viper
-	MyConfig, err := util.LoadConfig("./")
-	if err != nil {
-		log.Fatal("cannot load config:", err)
+	//
+	conferr := util.LoadConfig("./")
+	if conferr != nil {
+		log.Fatal("cannot load config:", conferr)
 	}
 	log.Printf("Tradier Key: %s", util.MyConfig.TradierKey)
 	log.Printf("Tradier Account: %s", util.MyConfig.TradierAccount)
 
+	// DB initialization
+	//
+	conn, err := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
+	if err != nil {
+		log.Fatal("cannot connect to db:", err)
+	}
+
+	// store := db.NewStore(conn)
+	// server, err := api.NewServer(config, store)
+	// if err != nil {
+	// 	log.Fatal("cannot create server:", err)
+	// }
+
+	// err = server.Start(config.ServerAddress)
+	// if err != nil {
+	// 	log.Fatal("cannot start server:", err)
+	// }
+
 	// Start Fiber App
+	//
 	app := fiber.New()
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
