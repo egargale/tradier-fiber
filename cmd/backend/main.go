@@ -2,18 +2,15 @@ package main
 
 import (
 	"database/sql"
-	"strconv"
-
-	// "fmt"
 	"log"
-
-	_ "github.com/lib/pq"
+	"strconv"
 
 	//db "github.com/egargale/tradier-fiber/internals/postgresql"
 	"github.com/egargale/tradier-fiber/internals/util"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 var MyConfig util.Config
@@ -43,10 +40,16 @@ func main() {
 
 	// DB initialization
 	//
-	_, dberr := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
+	// db, dberr := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
+	db, dberr := sql.Open("pgx", MyConfig.DBSource)
 	if dberr != nil {
 		log.Fatal("cannot connect to db:", dberr)
 	}
+
+	defer func() {
+		_ = db.Close()
+		log.Println("DB Closed")
+	}()
 
 	// store := db.NewStore(conn)
 	// server, err := api.NewServer(config, store)
