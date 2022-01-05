@@ -26,24 +26,6 @@ type Config struct {
 	AccessTokenDuration   time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 }
 
-// LoadConfig reads configuration from file or environment variables.
-// func LoadConfig(path string) (config Config, err error) {
-// 	viper.AddConfigPath(path)
-// 	viper.SetConfigName("app")
-// 	viper.SetConfigType("env")
-// 	viper.AutomaticEnv()
-
-// 	err = viper.ReadInConfig()
-// 	if err != nil {
-// 		log.Fatalf("Error reading config file, %s", err)
-// 	}
-// 	err = viper.Unmarshal(&config)
-// 	if err != nil {
-// 		log.Fatalf("Unable to decode the config file, %v", err)
-// 	}
-// 	return config, err
-// }
-
 func LoadConfig(path string) error {
 	v := viper.New()
 	v.AddConfigPath(path)

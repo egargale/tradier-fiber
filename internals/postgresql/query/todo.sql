@@ -1,3 +1,3 @@
---name GetAllTodos :many
+-- name: GetAllTodos :many
 SELECT *
-FROM todos; 
+FROM todos;

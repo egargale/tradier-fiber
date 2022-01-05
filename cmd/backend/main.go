@@ -2,10 +2,15 @@ package main
 
 import (
 	"strconv"
+	"fmt"
+	"log"
+	"tradier-fiber/internals/rest"
+	"tradier-fiber/internals/util"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
 )
+var Config util.Config
 
 type Todo struct {
 	Id        int    `json:"id"`
@@ -19,8 +24,17 @@ var todos = []*Todo{
 }
 
 func main() {
-	app := fiber.New()
+	
+	// Parsing Config with Viper
+	MyConfig, err := util.LoadConfig("./")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	log.Printf("Tradier Key: %s", util.MyConfig.TradierKey)
+	log.Printf("Tradier Account: %s", util.MyConfig.TradierAccount)
 
+	// Start Fiber App
+	app := fiber.New()
 	app.Use(middleware.Logger())
 	app.Use(middleware.Recover())
 
