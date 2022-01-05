@@ -7,7 +7,9 @@ import (
 	// "fmt"
 	"log"
 
-	db "github.com/egargale/tradier-fiber/internals/postgresql"
+	_ "github.com/lib/pq"
+
+	//db "github.com/egargale/tradier-fiber/internals/postgresql"
 	"github.com/egargale/tradier-fiber/internals/util"
 
 	"github.com/gofiber/fiber"
@@ -37,12 +39,13 @@ func main() {
 	}
 	log.Printf("Tradier Key: %s", util.MyConfig.TradierKey)
 	log.Printf("Tradier Account: %s", util.MyConfig.TradierAccount)
+	log.Printf("DB Driver: %s", util.MyConfig.DBDriver)
 
 	// DB initialization
 	//
-	conn, err := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
-	if err != nil {
-		log.Fatal("cannot connect to db:", err)
+	_, dberr := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
+	if dberr != nil {
+		log.Fatal("cannot connect to db:", dberr)
 	}
 
 	// store := db.NewStore(conn)
