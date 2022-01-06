@@ -1,12 +1,11 @@
 package postgresql
 
 import (
-	"database/sql"
-	// "context"
-	// "errors"
+	"context"
+	"errors"
 
 	// "github.com/google/uuid"
-	// "github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4"
 
 	// "github.com/egargale/tradier-fiber/internals"
 	"github.com/egargale/tradier-fiber/internals/postgresql/db"
@@ -14,11 +13,19 @@ import (
 
 type Repo struct {
 	q *db.Queries
-	DB *sql.DB
 }
 
-func NewRepo(db *sql.DB) *Repo {
+func NewRepo(d db.DBTX) *Repo {
 	return &Repo{
-		DB: db,
-		q: db.New(db),}
+		q: db.New(d)}
+}
+
+func (r *Repo) Find(ctx context.Context) ([]db.Todo, error) {
+	res, err := r.q.GetAllTodos(ctx)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, err
+		}
+	}
+	return res, err
 }
