@@ -22,8 +22,18 @@ func mylog() string {
 }
 
 func main() {
-	app := fiber.New()
+	go myws()
+	app1 := fiber.New()
 
+    app1.Get("/", func(c *fiber.Ctx) error {
+        return c.SendString("Hello, World 👋!")
+    })
+    app1.Listen(":3300")
+}
+
+func myws(){
+
+	app := fiber.New()
 	// Optional middleware
 	app.Use("/ws", func(c *fiber.Ctx) error {
 		if c.Get("host") == "localhost:3000" {
