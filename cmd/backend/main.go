@@ -1,18 +1,18 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"log"
 	"strconv"
 
-	"github.com/egargale/tradier-fiber/internals/postgresql"
+	// "github.com/egargale/tradier-fiber/internals/postgresql"
 	"github.com/egargale/tradier-fiber/internals/util"
 
 	// "github.com/go-redis/redis/internal"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
-	"github.com/jackc/pgx/v4"
+	// "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
@@ -45,13 +45,13 @@ func main() {
 	//
 	// db, dberr := sql.Open(MyConfig.DBDriver, MyConfig.DBSource)
 	// db, dberr := sql.Open("pgx", MyConfig.DBSource)
-	dbconn, dberr := pgx.Connect(context.Background(), MyConfig.DBSource)
-	if dberr != nil {
-		log.Fatal("cannot connect to db:", dberr)
-	}
-	defer dbconn.Close(context.Background())
+	// dbconn, dberr := pgx.Connect(context.Background(), MyConfig.DBSource)
+	// if dberr != nil {
+	// 	log.Fatal("cannot connect to db:", dberr)
+	// }
+	// defer dbconn.Close(context.Background())
 
-	store := postgresql.NewRepo(dbconn)
+	// store := postgresql.NewRepo(dbconn)
 
 	// Start Fiber App
 	//

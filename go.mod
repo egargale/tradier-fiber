@@ -7,7 +7,8 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/goccy/go-json v0.8.1
 	github.com/gofiber/fiber v1.14.6
-	github.com/google/uuid v1.3.0
+	github.com/gofiber/fiber/v2 v2.24.0
+	github.com/gofiber/websocket/v2 v2.0.15
 	github.com/jackc/pgconn v1.10.1
 	github.com/jackc/pgtype v1.9.1
 	github.com/jackc/pgx/v4 v4.14.1
@@ -18,6 +19,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.2 // indirect
+	github.com/fasthttp/websocket v1.4.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gofiber/utils v0.0.10 // indirect
 	github.com/gorilla/schema v1.1.0 // indirect
@@ -36,6 +38,7 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.17.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
+	github.com/savsgio/gotils v0.0.0-20211223103454-d0aaa54c5899 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
