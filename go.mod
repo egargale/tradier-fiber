@@ -6,7 +6,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/goccy/go-json v0.8.1
-	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.24.0
 	github.com/gofiber/websocket/v2 v2.0.15
 	github.com/jackc/pgconn v1.10.1
@@ -21,8 +20,6 @@ require (
 	github.com/andybalholm/brotli v1.0.2 // indirect
 	github.com/fasthttp/websocket v1.4.4 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/gofiber/utils v0.0.10 // indirect
-	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
@@ -32,8 +29,6 @@ require (
 	github.com/klauspost/compress v1.13.4 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.17.0 // indirect

@@ -10,8 +10,10 @@ import (
 
 	// "github.com/go-redis/redis/internal"
 
-	"github.com/gofiber/fiber"
-	"github.com/gofiber/fiber/middleware"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+
 	// "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
@@ -56,16 +58,16 @@ func main() {
 	// Start Fiber App
 	//
 	app := fiber.New()
-	app.Use(middleware.Logger())
-	app.Use(middleware.Recover())
+	app.Use(logger.New())
+	app.Use(recover.New())
 
-	app.Get("/", func(ctx *fiber.Ctx) {
-		ctx.Send("hello world")
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendString("hello world")
 	})
 
 	SetupApiV1(app)
 
-	err := app.Listen(3300)
+	err := app.Listen(":3300")
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +88,7 @@ func SetupTodosRoutes(grp fiber.Router) {
 	todosRoutes.Patch("/:id", UpdateTodo)
 }
 
-func UpdateTodo(ctx *fiber.Ctx) {
+func UpdateTodo(ctx *fiber.Ctx) error {
 	type request struct {
 		Name      *string `json:"name"`
 		Completed *bool   `json:"completed"`
@@ -95,19 +97,17 @@ func UpdateTodo(ctx *fiber.Ctx) {
 	paramsId := ctx.Params("id")
 	id, err := strconv.Atoi(paramsId)
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse id",
 		})
-		return
 	}
 
 	var body request
 	err = ctx.BodyParser(&body)
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse body",
 		})
-		return
 	}
 
 	var todo *Todo
@@ -120,8 +120,7 @@ func UpdateTodo(ctx *fiber.Ctx) {
 	}
 
 	if todo == nil {
-		ctx.Status(fiber.StatusNotFound)
-		return
+		return ctx.SendStatus(fiber.StatusNotFound)
 	}
 
 	if body.Name != nil {
@@ -132,51 +131,47 @@ func UpdateTodo(ctx *fiber.Ctx) {
 		todo.Completed = *body.Completed
 	}
 
-	ctx.Status(fiber.StatusOK).JSON(todo)
+	return ctx.Status(fiber.StatusOK).JSON(todo)
 }
 
-func DeleteTodo(ctx *fiber.Ctx) {
+func DeleteTodo(ctx *fiber.Ctx) error {
 	paramsId := ctx.Params("id")
 	id, err := strconv.Atoi(paramsId)
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse id",
 		})
-		return
 	}
 
 	for i, todo := range todos {
 		if todo.Id == id {
 			todos = append(todos[0:i], todos[i+1:]...)
-			ctx.Status(fiber.StatusNoContent)
-			return
+			return ctx.SendStatus(fiber.StatusNoContent)
 		}
 	}
 
-	ctx.Status(fiber.StatusNotFound)
+	return ctx.SendStatus(fiber.StatusNotFound)
 }
 
-func GetTodo(ctx *fiber.Ctx) {
+func GetTodo(ctx *fiber.Ctx) error {
 	paramsId := ctx.Params("id")
 	id, err := strconv.Atoi(paramsId)
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse id",
 		})
-		return
 	}
 
 	for _, todo := range todos {
 		if todo.Id == id {
-			ctx.Status(fiber.StatusOK).JSON(todo)
-			return
+			return ctx.Status(fiber.StatusOK).JSON(todo)
 		}
 	}
 
-	ctx.Status(fiber.StatusNotFound)
+	return ctx.SendStatus(fiber.StatusNotFound)
 }
 
-func CreateTodo(ctx *fiber.Ctx) {
+func CreateTodo(ctx *fiber.Ctx) error {
 	type request struct {
 		Name string `json:"name"`
 	}
@@ -185,10 +180,9 @@ func CreateTodo(ctx *fiber.Ctx) {
 
 	err := ctx.BodyParser(&body)
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "cannot parse json",
 		})
-		return
 	}
 
 	todo := &Todo{
@@ -199,9 +193,9 @@ func CreateTodo(ctx *fiber.Ctx) {
 
 	todos = append(todos, todo)
 
-	ctx.Status(fiber.StatusCreated).JSON(todo)
+	return ctx.Status(fiber.StatusCreated).JSON(todo)
 }
 
-func GetTodos(ctx *fiber.Ctx) {
-	ctx.Status(fiber.StatusOK).JSON(todos)
+func GetTodos(ctx *fiber.Ctx) error {
+	return ctx.Status(fiber.StatusOK).JSON(todos)
 }

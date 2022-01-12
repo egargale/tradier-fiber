@@ -28,7 +28,15 @@ func main() {
     app1.Get("/", func(c *fiber.Ctx) error {
         return c.SendString("Hello, World 👋!")
     })
+
+	api := app1.Group("/api")
+	v1 := api.Group("/v1")
+	v1.Get("/list", GetTodo)
     app1.Listen(":3300")
+}
+func GetTodo(ctx *fiber.Ctx) error {
+	msg := "cippa lippa"
+	return ctx.SendString(msg)
 }
 
 func myws(){
