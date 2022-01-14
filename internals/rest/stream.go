@@ -13,7 +13,7 @@ import (
 	// "github.com/pkg/errors"
 )
 
-func (tc *Client) GetSessionID() (interface{}, error) {
+func (tc *Client) GetSessionID() (Stream, error) {
 
 	// First create a streaming session.
 	createSessionUrl := tc.endpoint + "/v1/markets/events/session"
@@ -52,11 +52,14 @@ func (tc *Client) GetSessionID() (interface{}, error) {
 	if _, retBody, errs = a.Struct(&sessionResp); len(errs) > 0 {
 		log.Printf("received: %v", string(retBody))
 		log.Printf("could not send HTTP request: %v", errs)
-		return nil, errs[len(errs)-1]
+		return sessionResp.Stream, fmt.Errorf("Error in socket")
 	}
 	log.Println(sessionResp.Stream.SessionId)
-	go OpenStreamSocket(sessionResp.Stream.SessionId)
-	return sessionResp, nil
+	SocketConfig.SessionId = sessionResp.Stream.SessionId
+	SocketConfig.Url = sessionResp.Stream.Url
+	
+	// go OpenStreamSocket(sessionResp.Stream.SessionId)
+	return sessionResp.Stream, nil
 }
 
 func OpenStreamSocket(id string) {
@@ -111,13 +114,14 @@ func OpenStreamSocket(id string) {
 		case <-ctx.Done():
 			c.Close(websocket.StatusNormalClosure, "")
 			return
-		case t := <-ticker.C:
-			log.Printf("time: %s", t.String())
+		case <-ticker.C:
+			// log.Printf("time: %s", t.String())
+			err = c.Write(ctx, websocket.MessageText, []byte(fakepayload))
 			// err := c.Write(ctx, websocket.MessageText, []byte(t.String()))
-			// if err != nil {
-			// 	log.Println("write:", err)
-			// 	return
-			// }
+			if err != nil {
+				log.Println("write:", err)
+				return
+			}
 		}
 	}
 }

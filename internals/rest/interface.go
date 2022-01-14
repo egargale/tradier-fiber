@@ -2,8 +2,8 @@ package rest
 
 import (
 	"database/sql/driver"
-	"github.com/goccy/go-json"
 	"fmt"
+	"github.com/goccy/go-json"
 	"math"
 	"strconv"
 	"time"
@@ -180,4 +180,11 @@ type MarketStatus struct {
 	Description string
 	NextChange  DateTime `json:"next_change"`
 	NextState   string   `json:"next_state"`
+}
+
+var SocketConfig Stream
+
+type Stream struct {
+	SessionId string
+	Url       string
 }

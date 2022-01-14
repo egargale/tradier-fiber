@@ -58,6 +58,8 @@ func main() {
 
 	// get sessionid
 	rest.MyTradier_Stream()
+	log.Printf("Socket ID: %s", rest.SocketConfig.SessionId)
+	go rest.OpenStreamSocket(rest.SocketConfig.SessionId)
 
 	// Start Fiber App
 	//
