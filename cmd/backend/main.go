@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	// "github.com/egargale/tradier-fiber/internals/postgresql"
+	"github.com/egargale/tradier-fiber/internals/rest"
 	"github.com/egargale/tradier-fiber/internals/util"
 
 	// "github.com/go-redis/redis/internal"
@@ -54,6 +55,9 @@ func main() {
 	// defer dbconn.Close(context.Background())
 
 	// store := postgresql.NewRepo(dbconn)
+
+	// get sessionid
+	rest.MyTradier_Stream()
 
 	// Start Fiber App
 	//

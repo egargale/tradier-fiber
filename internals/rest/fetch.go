@@ -3,12 +3,23 @@ package rest
 import (
 	"log"
 
-	"tradier-fiber/internals/util"
+	"github.com/egargale/tradier-fiber/internals/util"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/valyala/fasthttp"
 	// "github.com/spf13/viper"
 )
+
+func MyTradier_Stream() {
+	params := DefaultParams(util.MyConfig.TradierKey)
+	client := NewClient(params)
+	client.SelectAccount(util.MyConfig.TradierAccount)
+	stream, err := client.GetSessionID()
+	if err != nil {
+		log.Printf("Opening Session: Error is %s", err)
+	}
+	spew.Dump(stream)
+}
 
 func MyTradier_Market() {
 	params := DefaultParams(util.MyConfig.TradierKey)

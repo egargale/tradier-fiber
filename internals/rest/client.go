@@ -137,7 +137,7 @@ func (tc *Client) GetAccountPositions() (interface{}, error) {
 }
 
 func (tc *Client) getTradierResponse(url string) ([]byte, error) {
-	tc.client.MaxIdemponentCallAttempts=10
+	tc.client.MaxIdemponentCallAttempts = 10
 	fmt.Printf("Client will connect to: %s\n", url)
 	req := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(req)
@@ -145,13 +145,13 @@ func (tc *Client) getTradierResponse(url string) ([]byte, error) {
 	req.SetRequestURI(url)
 	req.Header.Set("Authorization", tc.authHeader)
 	req.Header.Set("Accept", "application/json")
-    
+
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 
 	// Perform the request
-	//err := fasthttp.Do(req, resp)
-	err := fasthttp.DoTimeout(req, resp, 3 * time.Second)
+	//
+	err := fasthttp.DoTimeout(req, resp, 3*time.Second)
 	if err != nil {
 		fmt.Printf("Client get failed: %s\n", err)
 		return nil, err
