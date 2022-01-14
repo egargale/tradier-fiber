@@ -1,15 +1,14 @@
 package rest
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"os/signal"
 	"time"
-	"context"
 
-	"nhooyr.io/websocket"
-	"nhooyr.io/websocket/wsjson"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
+	"nhooyr.io/websocket"
 	// "github.com/gofiber/fiber/v2/middleware/session"
 	// "github.com/pkg/errors"
 )
@@ -56,12 +55,11 @@ func (tc *Client) GetSessionID() (interface{}, error) {
 		return nil, errs[len(errs)-1]
 	}
 	log.Println(sessionResp.Stream.SessionId)
+	go OpenStreamSocket(sessionResp.Stream.SessionId)
 	return sessionResp, nil
 }
 
-func OpenStreamSocket(){
-	interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
+func OpenStreamSocket(id string) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
@@ -73,8 +71,24 @@ func OpenStreamSocket(){
 	}
 	defer c.Close(websocket.StatusInternalError, "the sky is falling")
 
-	err = wsjson.Write(ctx, c, "hi")
-	if err !+ nil {
+	type streamPayload struct {
+		Symbols   []string `json:"symbols"`
+		SessionId string   `json:"sessionid"`
+		Linebreak string   `json:"linebreak"`
+	}
+
+	defaultsymbol := []string{"SPY"}
+	var initial_payload streamPayload
+	initial_payload.SessionId = id
+	initial_payload.Symbols = defaultsymbol
+	initial_payload.Linebreak = "true"
+	spew.Dump(initial_payload)
+
+	// err = wsjson.Write(ctx, c, initial_payload)
+	fakepayload := fmt.Sprintf("{\"symbols\": [\"SPY\"], \"sessionid\": \"%s\", \"linebreak\": true}", id)
+	log.Println(fakepayload)
+	err = c.Write(ctx, websocket.MessageText, []byte(fakepayload))
+	if err != nil {
 		log.Printf("Error in subscribing stream %s", err)
 	}
 	done := make(chan struct{})
@@ -90,29 +104,20 @@ func OpenStreamSocket(){
 		}
 	}()
 
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Second * 30)
 	defer ticker.Stop()
 	for {
 		select {
-		case <-done:
+		case <-ctx.Done():
+			c.Close(websocket.StatusNormalClosure, "")
 			return
 		case t := <-ticker.C:
-			// err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
-			err := c.Write(ctx, websocket.MessageText, []byte(t.String()))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-		case <-interrupt:
-			log.Println("interrupt")
-			// Cleanly close the connection by sending a close message and then
-			// waiting (with timeout) for the server to close the connection.
-			err := c.Close(websocket.StatusNormalClosure, "")
-			if err != nil {
-				log.Println("write close:", err)
-				return
-			}
+			log.Printf("time: %s", t.String())
+			// err := c.Write(ctx, websocket.MessageText, []byte(t.String()))
+			// if err != nil {
+			// 	log.Println("write:", err)
+			// 	return
+			// }
 		}
 	}
-
 }
