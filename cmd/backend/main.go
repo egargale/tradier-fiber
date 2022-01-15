@@ -10,6 +10,7 @@ import (
 	"github.com/egargale/tradier-fiber/internals/util"
 
 	// "github.com/go-redis/redis/internal"
+	// "github.com/go-redis/redis/v8"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -20,6 +21,7 @@ import (
 )
 
 var MyConfig util.Config
+
 
 type Todo struct {
 	Id        int    `json:"id"`
@@ -43,6 +45,8 @@ func main() {
 	log.Printf("Tradier Key: %s", util.MyConfig.TradierKey)
 	log.Printf("Tradier Account: %s", util.MyConfig.TradierAccount)
 	log.Printf("DB Driver: %s", util.MyConfig.DBDriver)
+
+	// Redis Initilialization
 
 	// DB initialization
 	//

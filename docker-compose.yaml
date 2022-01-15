@@ -1,4 +1,6 @@
 version: "3.9"
+volumes:
+  questdb_data: {}
 services:
   pg_helpers:
     build: 
@@ -51,6 +53,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: secret
     ports:
       - "5050:80"
+  questdb:
+    image: "questdb/questdb:latest"
+    volumes:
+      - questdb_data:/root/.questdb/db
+    ports:
+      - "9000:9000"
+      - "8812:8812"
   # api:
   #   build:
   #     context: .

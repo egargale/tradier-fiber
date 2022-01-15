@@ -3,11 +3,9 @@ package rest
 import (
 	"log"
 
-	"github.com/egargale/tradier-fiber/internals/util"
-
 	"github.com/davecgh/go-spew/spew"
+	"github.com/egargale/tradier-fiber/internals/util"
 	"github.com/valyala/fasthttp"
-	// "github.com/spf13/viper"
 )
 
 func MyTradier_Stream() {
